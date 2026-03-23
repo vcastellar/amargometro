@@ -81,34 +81,46 @@ const scoreMap = {
 
 const resultBands = [
   {
-    maxRatio: 0.2,
-    title: 'Nivel: persona soportable por la sociedad.',
+    maxRatio: 0.14,
+    title: 'Alérgico a la sonrisa',
     description:
-      'Sorprendentemente no destilas bilis por los poros. Quizá seas amable o quizá aún no te ha llegado el recibo de la luz.',
+      'Todavía conservas un hilo de humanidad. Te quejas de lo normal, pero sigues siendo el amargado promedio de oficina con margen de rescate.',
   },
   {
-    maxRatio: 0.4,
-    title: 'Nivel: ceño fruncido de uso doméstico.',
+    maxRatio: 0.28,
+    title: 'Aguafiestas ceñudo',
     description:
-      'Tienes tus cositas, tus bufidos y tus juicios gratuitos, pero todavía puedes pasar por funcional sin asustar a Recursos Humanos.',
+      'Tienes la acidez de un yogur caducado. Bufas con elegancia y te incomoda la felicidad ajena, aunque aún logras disimular en reuniones familiares.',
   },
   {
-    maxRatio: 0.65,
-    title: 'Nivel: vinagre reserva.',
+    maxRatio: 0.42,
+    title: 'Sommelier de la queja',
     description:
-      'La gente siente tu energía agria antes de que abras la boca. Aun así, podrías reconducirte si dejas de discutir con stickers de gatitos.',
+      'Tu deporte favorito es el suspiro de desprecio. Si ves un arcoíris, buscas dónde está la mancha de aceite antes de admitir que es bonito.',
   },
   {
-    maxRatio: 0.85,
-    title: 'Nivel: señor/a de la tormenta permanente.',
+    maxRatio: 0.58,
+    title: 'Bilis Premium',
     description:
-      'Lo tuyo no es mal humor: es una marca personal. Si un arcoíris sale delante de ti, seguramente lo denuncias por exceso de optimismo.',
+      'Has hecho de la bilis un arte. No solo estás molesto: diseñas nuevas formas de estarlo y conviertes cualquier comentario alegre en una objeción técnica.',
+  },
+  {
+    maxRatio: 0.74,
+    title: 'Sultán de la Mala Leche',
+    description:
+      'Tu presencia corta la leche a tres metros. Tienes lista negra mental, criterio agrio y una capacidad admirable para arruinar un "qué buen día hace".',
+  },
+  {
+    maxRatio: 0.89,
+    title: 'Agujero negro',
+    description:
+      'Absorbes cualquier rastro de luz o alegría en varios metros a la redonda. El mundo te parece un error de diseño que tú habrías gestionado mejor.',
   },
   {
     maxRatio: 1,
-    title: 'Nivel: leyenda negra del amargor.',
+    title: 'General del Mal Fario',
     description:
-      'Enhorabuena, criatura. No tienes sangre, tienes café recalentado y rencor elegante. Eres el motivo por el que el amargómetro necesitaba barra XL.',
+      'Eres el jefe final de la amargura. No tienes sangre: tienes vinagre de Módena. El Grinch a tu lado parece un monitor de campamento.',
   },
 ];
 
@@ -130,6 +142,9 @@ questions.forEach((question, index) => {
   const article = clone.querySelector('.question-card');
   const name = `question-${index}`;
 
+  article.dataset.index = String(index);
+  article.hidden = index !== 0;
+
   article.querySelector('.question-tag').textContent = `Pregunta ${index + 1}`;
   article.querySelector('.question-weight').textContent = `Hasta ${question.weight} puntos`;
   article.querySelector('.question-text').textContent = question.text;
@@ -142,8 +157,30 @@ questions.forEach((question, index) => {
   form.appendChild(clone);
 });
 
+const questionCards = [...form.querySelectorAll('.question-card')];
+
 function getSelectedValue(index) {
   return form.querySelector(`input[name="question-${index}"]:checked`)?.value;
+}
+
+function updateQuestionStates() {
+  let firstUnansweredIndex = questionCards.findIndex((_, index) => !getSelectedValue(index));
+
+  if (firstUnansweredIndex === -1) {
+    firstUnansweredIndex = questionCards.length - 1;
+  }
+
+  questionCards.forEach((card, index) => {
+    const answered = Boolean(getSelectedValue(index));
+    const shouldShow = answered || index === 0 || index === firstUnansweredIndex;
+    const isCurrent = !answered && index === firstUnansweredIndex;
+
+    card.hidden = !shouldShow;
+    card.classList.toggle('is-answered', answered);
+    card.classList.toggle('is-current', isCurrent);
+  });
+
+  submitButton.disabled = questionCards.some((_, index) => !getSelectedValue(index));
 }
 
 function animateValue(targetScore) {
@@ -165,12 +202,24 @@ function animateValue(targetScore) {
   requestAnimationFrame(tick);
 }
 
+function scrollToQuestion(index) {
+  const nextCard = questionCards[index];
+
+  if (!nextCard) {
+    return;
+  }
+
+  nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function calculateResult() {
   const unanswered = questions.findIndex((_, index) => !getSelectedValue(index));
 
   if (unanswered !== -1) {
+    updateQuestionStates();
     resultTitle.textContent = 'Te has dejado preguntas sin responder, alma de cántaro.';
     resultDescription.textContent = `Completa la pregunta ${unanswered + 1} para que podamos juzgarte con datos y no solo por intuición.`;
+    scrollToQuestion(unanswered);
     return;
   }
 
@@ -188,7 +237,26 @@ function calculateResult() {
   animateValue(score);
   resultTitle.textContent = band.title;
   resultDescription.textContent = band.description;
+  document.querySelector('.result').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+form.addEventListener('change', (event) => {
+  const target = event.target;
+
+  if (!(target instanceof HTMLInputElement) || target.type !== 'radio') {
+    return;
+  }
+
+  const [, rawIndex] = target.name.split('-');
+  const currentIndex = Number(rawIndex);
+  const nextIndex = currentIndex + 1;
+
+  updateQuestionStates();
+
+  if (nextIndex < questions.length) {
+    window.setTimeout(() => scrollToQuestion(nextIndex), 150);
+  }
+});
 
 submitButton.addEventListener('click', calculateResult);
 
@@ -198,5 +266,8 @@ resetButton.addEventListener('click', () => {
   scoreValue.textContent = '0';
   resultTitle.textContent = 'Responde el test, criatura.';
   resultDescription.textContent = 'Cuando termines, te diremos si eres un rayo de sol o una auditoría con piernas.';
+  updateQuestionStates();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+updateQuestionStates();
