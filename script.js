@@ -126,6 +126,7 @@ const resultBands = [
 
 const form = document.getElementById('amargometro-form');
 const template = document.getElementById('question-template');
+const startButton = document.getElementById('start-test');
 const submitButton = document.getElementById('submit-test');
 const resetButton = document.getElementById('reset-test');
 const meterBar = document.getElementById('meter-bar');
@@ -133,6 +134,7 @@ const meterMax = document.getElementById('meter-max');
 const scoreValue = document.getElementById('score-value');
 const resultTitle = document.getElementById('result-title');
 const resultDescription = document.getElementById('result-description');
+const quizStatus = document.getElementById('quiz-status');
 
 const totalMaxScore = questions.reduce((sum, question) => sum + question.weight, 0);
 meterMax.textContent = totalMaxScore;
@@ -157,6 +159,7 @@ questions.forEach((question, index) => {
 });
 
 const questionCards = [...form.querySelectorAll('.question-card')];
+const lastResultBand = resultBands[resultBands.length - 1];
 
 function getSelectedValue(index) {
   return form.querySelector(`input[name="question-${index}"]:checked`)?.value;
@@ -182,6 +185,10 @@ function updateQuestionStates() {
 
   submitButton.hidden = !isComplete;
   submitButton.disabled = !isComplete;
+
+  if (quizStatus) {
+    quizStatus.hidden = questionCards.length > 0;
+  }
 }
 
 function animateValue(targetScore) {
@@ -232,7 +239,7 @@ function calculateResult() {
   });
 
   const ratio = score / totalMaxScore;
-  const band = resultBands.find((item) => ratio <= item.maxRatio) || resultBands.at(-1);
+  const band = resultBands.find((item) => ratio <= item.maxRatio) || lastResultBand;
 
   meterBar.style.width = `${ratio * 100}%`;
   animateValue(score);
@@ -262,6 +269,11 @@ form.addEventListener('change', (event) => {
   if (!submitButton.hidden) {
     window.setTimeout(() => submitButton.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
   }
+});
+
+startButton?.addEventListener('click', () => {
+  scrollToQuestion(0);
+  form.querySelector('input')?.focus();
 });
 
 submitButton.addEventListener('click', calculateResult);

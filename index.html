@@ -37,6 +37,7 @@
             Marca una respuesta y baja a la siguiente. Si tardas más de tres segundos en pensarla, seguramente ya sabes que la respuesta real era
             <strong>NO</strong>.
           </p>
+          <button id="start-test" class="primary-btn" type="button">Iniciar el test</button>
         </div>
       </section>
 
@@ -48,9 +49,13 @@
           </div>
         </div>
 
+        <p id="quiz-status" class="quiz-status">
+          Pulsa <strong>Iniciar el test</strong> para saltar a la primera pregunta. Si no ves preguntas,
+          recarga la página y vuelve a intentarlo.
+        </p>
         <form id="amargometro-form" class="questions"></form>
         <div class="quiz-actions">
-          <button id="submit-test" class="primary-btn" hidden>Calcular mi desgracia</button>
+          <button id="submit-test" class="primary-btn" type="button" hidden>Calcular mi desgracia</button>
         </div>
       </section>
 
