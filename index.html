@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amargómetro Supremo</title>
+    <meta
+      name="description"
+      content="Test sarcástico para medir tu nivel de amargura con un amargómetro animado y bastante mala leche."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <main class="layout">
+      <section class="hero card">
+        <p class="eyebrow">Diagnóstico emocional no solicitado</p>
+        <h1>Amargómetro Supremo</h1>
+        <p class="lead">
+          Un test gamberro, canalla y con más mala baba que un lunes sin café para descubrir
+          si eres una personita entrañable o un gremlin social con Wi‑Fi.
+        </p>
+
+        <div class="instructions">
+          <h2>Instrucciones</h2>
+          <p>
+            Lee cada situación y responde con un <strong>SÍ</strong>, un <strong>NO</strong> o un
+            <strong>A veces</strong> con total sinceridad. No engañes a nadie, que nos conocemos.
+          </p>
+          <p>
+            Si tardas más de tres segundos en pensar la respuesta, es que la respuesta es
+            <strong>NO</strong> y te estás intentando autoengañar.
+          </p>
+        </div>
+      </section>
+
+      <section class="quiz card">
+        <div class="quiz-header">
+          <div>
+            <p class="eyebrow">Test oficial de la cofradía del ceño fruncido</p>
+            <h2>Marca la opción que menos te deje en evidencia</h2>
+          </div>
+          <button id="submit-test" class="primary-btn">Calcular mi desgracia</button>
+        </div>
+
+        <form id="amargometro-form" class="questions"></form>
+      </section>
+
+      <section class="result card" aria-live="polite">
+        <div class="result-header">
+          <div>
+            <p class="eyebrow">Resultado final</p>
+            <h2>Tu nivel de amargura certificado</h2>
+          </div>
+          <button id="reset-test" class="ghost-btn">Reiniciar el drama</button>
+        </div>
+
+        <div class="meter-wrap">
+          <div class="meter-meta">
+            <span>0</span>
+            <span id="meter-max">0</span>
+          </div>
+          <div class="meter-track" role="img" aria-label="Barra del amargómetro">
+            <div id="meter-bar" class="meter-bar"></div>
+          </div>
+        </div>
+
+        <div class="scoreline">
+          <strong id="score-value">0</strong>
+          <span>puntos de amargura premium</span>
+        </div>
+
+        <p id="result-title" class="result-title">Responde el test, criatura.</p>
+        <p id="result-description" class="result-description">
+          Cuando termines, te diremos si eres un rayo de sol o una auditoría con piernas.
+        </p>
+      </section>
+    </main>
+
+    <template id="question-template">
+      <article class="question-card">
+        <div class="question-top">
+          <span class="question-tag"></span>
+          <span class="question-weight"></span>
+        </div>
+        <p class="question-text"></p>
+        <div class="options">
+          <label class="option-pill">
+            <input type="radio" value="sí" />
+            <span>SÍ</span>
+          </label>
+          <label class="option-pill">
+            <input type="radio" value="a_veces" />
+            <span>A veces</span>
+          </label>
+          <label class="option-pill">
+            <input type="radio" value="no" />
+            <span>NO</span>
+          </label>
+        </div>
+      </article>
+    </template>
+
+    <script src="script.js"></script>
+  </body>
+</html>
