@@ -160,6 +160,12 @@ h2 {
   gap: 1.25rem;
 }
 
+.quiz-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .question-card {
   padding: 1.25rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -190,8 +196,7 @@ h2 {
   font-size: 0.84rem;
 }
 
-.question-tag,
-.question-weight {
+.question-tag {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
