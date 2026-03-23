@@ -145,7 +145,7 @@ questions.forEach((question, index) => {
   const name = `question-${index}`;
 
   article.dataset.index = String(index);
-  article.hidden = index !== 0;
+  article.hidden = false;
 
   article.querySelector('.question-tag').textContent = `Pregunta ${index + 1}`;
   article.querySelector('.question-text').textContent = question.text;
@@ -166,19 +166,14 @@ function getSelectedValue(index) {
 }
 
 function updateQuestionStates() {
-  let firstUnansweredIndex = questionCards.findIndex((_, index) => !getSelectedValue(index));
+  const firstUnansweredIndex = questionCards.findIndex((_, index) => !getSelectedValue(index));
   const isComplete = firstUnansweredIndex === -1;
-
-  if (isComplete) {
-    firstUnansweredIndex = questionCards.length - 1;
-  }
 
   questionCards.forEach((card, index) => {
     const answered = Boolean(getSelectedValue(index));
-    const shouldShow = answered || index === 0 || index === firstUnansweredIndex;
-    const isCurrent = !answered && index === firstUnansweredIndex;
+    const isCurrent = !isComplete && index === firstUnansweredIndex;
 
-    card.hidden = !shouldShow;
+    card.hidden = false;
     card.classList.toggle('is-answered', answered);
     card.classList.toggle('is-current', isCurrent);
   });
