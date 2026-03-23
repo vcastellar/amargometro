@@ -34,8 +34,7 @@
             <strong>A veces</strong> con total sinceridad. Verás todas las preguntas ya colocadas en orden, una detrás de otra, para que el drama fluya sin esconder nada.
           </p>
           <p>
-            Marca una respuesta y baja a la siguiente. Si tardas más de tres segundos en pensarla, seguramente ya sabes que la respuesta real era
-            <strong>NO</strong>.
+            Marca una respuesta y, cuando termines, pulsa el botón de calcular para descubrir tu puntuación exacta, tu categoría de amargura y la explicación oficial de tu caso.
           </p>
           <button id="start-test" class="primary-btn" type="button">Iniciar el test</button>
         </div>
@@ -47,6 +46,7 @@
             <p class="eyebrow">Test oficial de la cofradía del ceño fruncido</p>
             <h2>Responde en orden: todas las preguntas, una debajo de otra</h2>
           </div>
+          <p id="device-hint" class="device-hint" aria-live="polite"></p>
         </div>
 
         <p id="quiz-status" class="quiz-status">
@@ -54,7 +54,9 @@
         </p>
         <form id="amargometro-form" class="questions"></form>
         <div class="quiz-actions">
-          <button id="submit-test" class="primary-btn" type="button" hidden>Calcular mi desgracia</button>
+          <button id="submit-test" class="primary-btn" type="button" disabled>
+            Calcular mi puntuación amarga
+          </button>
         </div>
       </section>
 
@@ -80,6 +82,11 @@
         <div class="scoreline">
           <strong id="score-value">0</strong>
           <span>puntos de amargura premium</span>
+        </div>
+
+        <div class="result-category">
+          <span class="result-category-label">Categoría detectada</span>
+          <strong id="result-category-name" class="result-category-name">Pendiente de diagnóstico</strong>
         </div>
 
         <p id="result-title" class="result-title">Responde el test, criatura.</p>

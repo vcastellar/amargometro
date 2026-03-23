@@ -120,6 +120,15 @@ h2 {
   margin-bottom: 1.5rem;
 }
 
+.device-hint {
+  margin: 0;
+  max-width: 22rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
 .primary-btn,
 .ghost-btn {
   border: none;
@@ -191,6 +200,11 @@ h2 {
 
 .question-card.is-current .question-text {
   color: #fff6ef;
+}
+
+.question-card.is-current {
+  border-left: 3px solid rgba(255, 184, 107, 0.55);
+  padding-left: 1rem;
 }
 
 .question-card.is-answered {
@@ -294,6 +308,27 @@ h2 {
   line-height: 1;
 }
 
+.result-category {
+  margin-top: 1.15rem;
+  padding: 1rem 1.1rem;
+  display: grid;
+  gap: 0.25rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.result-category-label {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.result-category-name {
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+}
+
 .result-title {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
@@ -304,17 +339,58 @@ h2 {
   margin-bottom: 0;
 }
 
-@media (max-width: 700px) {
-  .layout {
-    width: min(100% - 1rem, 1120px);
-    padding-top: 1rem;
-  }
+:root[data-device='desktop'] .layout {
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  align-items: start;
+}
 
+:root[data-device='desktop'] .hero,
+:root[data-device='desktop'] .quiz {
+  grid-column: 1;
+}
+
+:root[data-device='desktop'] .result {
+  grid-column: 2;
+  position: sticky;
+  top: 1.25rem;
+}
+
+:root[data-device='mobile'] html {
+  scroll-behavior: auto;
+}
+
+:root[data-device='mobile'] .layout {
+  width: min(100% - 1rem, 1120px);
+  padding-top: 1rem;
+}
+
+:root[data-device='mobile'] .hero,
+:root[data-device='mobile'] .quiz,
+:root[data-device='mobile'] .result {
+  padding: 1.15rem;
+}
+
+:root[data-device='mobile'] .option-pill,
+:root[data-device='mobile'] .primary-btn,
+:root[data-device='mobile'] .ghost-btn {
+  min-height: 52px;
+}
+
+:root[data-device='mobile'] .meter-bar {
+  transition-duration: 0.9s;
+}
+
+@media (max-width: 700px) {
   .quiz-header,
   .result-header,
   .question-top {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .device-hint {
+    max-width: none;
+    text-align: left;
   }
 
   .primary-btn,

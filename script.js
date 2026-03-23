@@ -83,42 +83,49 @@ const resultBands = [
   {
     maxRatio: 0.14,
     title: 'Alérgico a la sonrisa',
+    category: 'Amargura leve con esperanza',
     description:
       'Todavía conservas un hilo de humanidad. Te quejas de lo normal, pero sigues siendo el amargado promedio de oficina con margen de rescate.',
   },
   {
     maxRatio: 0.28,
     title: 'Aguafiestas ceñudo',
+    category: 'Amargura funcional',
     description:
       'Tienes la acidez de un yogur caducado. Bufas con elegancia y te incomoda la felicidad ajena, aunque aún logras disimular en reuniones familiares.',
   },
   {
     maxRatio: 0.42,
     title: 'Sommelier de la queja',
+    category: 'Amargura entrenada',
     description:
       'Tu deporte favorito es el suspiro de desprecio. Si ves un arcoíris, buscas dónde está la mancha de aceite antes de admitir que es bonito.',
   },
   {
     maxRatio: 0.58,
     title: 'Bilis Premium',
+    category: 'Amargura seria',
     description:
       'Has hecho de la bilis un arte. No solo estás molesto: diseñas nuevas formas de estarlo y conviertes cualquier comentario alegre en una objeción técnica.',
   },
   {
     maxRatio: 0.74,
     title: 'Sultán de la Mala Leche',
+    category: 'Amargura avanzada',
     description:
-      'Tu presencia corta la leche a tres metros. Tienes lista negra mental, criterio agrio y una capacidad admirable para arruinar un "qué buen día hace".',
+      'Tu presencia corta la leche a tres metros. Tienes lista negra mental, criterio agrio y una capacidad admirable para arruinar un “qué buen día hace”.',
   },
   {
     maxRatio: 0.89,
     title: 'Agujero negro',
+    category: 'Amargura extrema',
     description:
       'Absorbes cualquier rastro de luz o alegría en varios metros a la redonda. El mundo te parece un error de diseño que tú habrías gestionado mejor.',
   },
   {
     maxRatio: 1,
     title: 'General del Mal Fario',
+    category: 'Jefe final de la amargura',
     description:
       'Eres el jefe final de la amargura. No tienes sangre: tienes vinagre de Módena. El Grinch a tu lado parece un monitor de campamento.',
   },
@@ -134,10 +141,15 @@ const meterMax = document.getElementById('meter-max');
 const scoreValue = document.getElementById('score-value');
 const resultTitle = document.getElementById('result-title');
 const resultDescription = document.getElementById('result-description');
+const resultCategoryName = document.getElementById('result-category-name');
 const quizStatus = document.getElementById('quiz-status');
+const deviceHint = document.getElementById('device-hint');
+const root = document.documentElement;
 
 const totalMaxScore = questions.reduce((sum, question) => sum + question.weight, 0);
 meterMax.textContent = totalMaxScore;
+
+let currentDeviceProfile = 'desktop';
 
 questions.forEach((question, index) => {
   const clone = template.content.cloneNode(true);
@@ -165,8 +177,32 @@ function getSelectedValue(index) {
   return form.querySelector(`input[name="question-${index}"]:checked`)?.value;
 }
 
+function detectDeviceProfile() {
+  const hasTouch = window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
+  const isNarrowViewport = window.matchMedia('(max-width: 760px)').matches;
+  return hasTouch || isNarrowViewport ? 'mobile' : 'desktop';
+}
+
+function applyDeviceProfile() {
+  currentDeviceProfile = detectDeviceProfile();
+  root.dataset.device = currentDeviceProfile;
+
+  if (deviceHint) {
+    deviceHint.textContent =
+      currentDeviceProfile === 'mobile'
+        ? 'Modo smartphone: botones más grandes y menos animaciones para responder con el pulgar.'
+        : 'Modo PC: vista optimizada para leer rápido y calcular tu drama sin estorbar.';
+  }
+
+  if (submitButton) {
+    submitButton.textContent =
+      currentDeviceProfile === 'mobile' ? 'Calcular puntuación' : 'Calcular mi puntuación amarga';
+  }
+}
+
 function updateQuestionStates() {
   const firstUnansweredIndex = questionCards.findIndex((_, index) => !getSelectedValue(index));
+  const answeredCount = questionCards.filter((_, index) => Boolean(getSelectedValue(index))).length;
   const isComplete = firstUnansweredIndex === -1;
 
   questionCards.forEach((card, index) => {
@@ -178,16 +214,18 @@ function updateQuestionStates() {
     card.classList.toggle('is-current', isCurrent);
   });
 
-  submitButton.hidden = !isComplete;
   submitButton.disabled = !isComplete;
 
   if (quizStatus) {
-    quizStatus.hidden = questionCards.length > 0;
+    quizStatus.hidden = false;
+    quizStatus.innerHTML = isComplete
+      ? '<strong>Listo.</strong> Ya puedes pulsar el botón para calcular tu puntuación y ver tu categoría de amargura.'
+      : `<strong>Progreso:</strong> llevas ${answeredCount} de ${questions.length} respuestas. Completa todas antes de pulsar calcular.`;
   }
 }
 
 function animateValue(targetScore) {
-  const duration = 1400;
+  const duration = currentDeviceProfile === 'mobile' ? 900 : 1400;
   const start = performance.now();
   const initialValue = Number(scoreValue.textContent) || 0;
 
@@ -212,7 +250,10 @@ function scrollToQuestion(index) {
     return;
   }
 
-  nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  nextCard.scrollIntoView({
+    behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth',
+    block: 'start',
+  });
 }
 
 function calculateResult() {
@@ -220,6 +261,7 @@ function calculateResult() {
 
   if (unanswered !== -1) {
     updateQuestionStates();
+    resultCategoryName.textContent = 'Diagnóstico bloqueado';
     resultTitle.textContent = 'Te has dejado preguntas sin responder, alma de cántaro.';
     resultDescription.textContent = `Completa la pregunta ${unanswered + 1} para que podamos juzgarte con datos y no solo por intuición.`;
     scrollToQuestion(unanswered);
@@ -238,9 +280,13 @@ function calculateResult() {
 
   meterBar.style.width = `${ratio * 100}%`;
   animateValue(score);
+  resultCategoryName.textContent = band.category;
   resultTitle.textContent = band.title;
   resultDescription.textContent = band.description;
-  document.querySelector('.result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelector('.result').scrollIntoView({
+    behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth',
+    block: 'start',
+  });
 }
 
 form.addEventListener('change', (event) => {
@@ -250,25 +296,12 @@ form.addEventListener('change', (event) => {
     return;
   }
 
-  const [, rawIndex] = target.name.split('-');
-  const currentIndex = Number(rawIndex);
-  const nextIndex = currentIndex + 1;
-
   updateQuestionStates();
-
-  if (nextIndex < questions.length) {
-    window.setTimeout(() => scrollToQuestion(nextIndex), 150);
-    return;
-  }
-
-  if (!submitButton.hidden) {
-    window.setTimeout(() => submitButton.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
-  }
 });
 
 startButton?.addEventListener('click', () => {
   scrollToQuestion(0);
-  form.querySelector('input')?.focus();
+  form.querySelector('input')?.focus({ preventScroll: true });
 });
 
 submitButton.addEventListener('click', calculateResult);
@@ -277,10 +310,13 @@ resetButton.addEventListener('click', () => {
   form.reset();
   meterBar.style.width = '0%';
   scoreValue.textContent = '0';
+  resultCategoryName.textContent = 'Pendiente de diagnóstico';
   resultTitle.textContent = 'Responde el test, criatura.';
   resultDescription.textContent = 'Cuando termines, te diremos si eres un rayo de sol o una auditoría con piernas.';
   updateQuestionStates();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth' });
 });
 
+applyDeviceProfile();
 updateQuestionStates();
+window.addEventListener('resize', applyDeviceProfile, { passive: true });
