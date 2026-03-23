@@ -146,7 +146,6 @@ questions.forEach((question, index) => {
   article.hidden = index !== 0;
 
   article.querySelector('.question-tag').textContent = `Pregunta ${index + 1}`;
-  article.querySelector('.question-weight').textContent = `Hasta ${question.weight} puntos`;
   article.querySelector('.question-text').textContent = question.text;
 
   clone.querySelectorAll('input').forEach((input) => {
@@ -165,8 +164,9 @@ function getSelectedValue(index) {
 
 function updateQuestionStates() {
   let firstUnansweredIndex = questionCards.findIndex((_, index) => !getSelectedValue(index));
+  const isComplete = firstUnansweredIndex === -1;
 
-  if (firstUnansweredIndex === -1) {
+  if (isComplete) {
     firstUnansweredIndex = questionCards.length - 1;
   }
 
@@ -180,7 +180,8 @@ function updateQuestionStates() {
     card.classList.toggle('is-current', isCurrent);
   });
 
-  submitButton.disabled = questionCards.some((_, index) => !getSelectedValue(index));
+  submitButton.hidden = !isComplete;
+  submitButton.disabled = !isComplete;
 }
 
 function animateValue(targetScore) {
@@ -255,6 +256,11 @@ form.addEventListener('change', (event) => {
 
   if (nextIndex < questions.length) {
     window.setTimeout(() => scrollToQuestion(nextIndex), 150);
+    return;
+  }
+
+  if (!submitButton.hidden) {
+    window.setTimeout(() => submitButton.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
   }
 });
 
