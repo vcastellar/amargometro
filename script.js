@@ -152,15 +152,14 @@ meterMax.textContent = totalMaxScore;
 
 let currentDeviceProfile = 'desktop';
 let lastCalculatedResult = null;
+const testUrl = window.location.origin + window.location.pathname;
 
 function buildShareText() {
-  const pageUrl = window.location.href;
-
   if (!lastCalculatedResult) {
-    return `Haz el test del Amargómetro Supremo y descubre tu nivel de amargura: ${pageUrl}`;
+    return '';
   }
 
-  return `Mi resultado en el Amargómetro Supremo: ${lastCalculatedResult.title} (${lastCalculatedResult.category}) con ${lastCalculatedResult.score}/${totalMaxScore} puntos. Haz el test aquí: ${pageUrl}`;
+  return `Mi resultado en el Amargómetro Supremo: ${lastCalculatedResult.title} (${lastCalculatedResult.category}) con ${lastCalculatedResult.score}/${totalMaxScore} puntos. Haz el test aquí: ${testUrl}`;
 }
 
 async function copyShareTextToClipboard(text) {
@@ -180,8 +179,13 @@ function updateShareStatus(message) {
 
 async function shareResult(platform) {
   const text = buildShareText();
+  if (!text) {
+    updateShareStatus('Primero calcula tu resultado para poder compartirlo junto con el enlace al test.');
+    return;
+  }
+
   const encodedText = encodeURIComponent(text);
-  const encodedUrl = encodeURIComponent(window.location.href);
+  const encodedUrl = encodeURIComponent(testUrl);
 
   if (platform === 'instagram') {
     try {
@@ -201,8 +205,8 @@ async function shareResult(platform) {
 
   const shareUrls = {
     whatsapp: `https://wa.me/?text=${encodedText}`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`,
-    twitter: `https://twitter.com/intent/tweet?text=${encodedText}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+    twitter: `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
   };
 
   const targetUrl = shareUrls[platform];
@@ -212,7 +216,7 @@ async function shareResult(platform) {
   }
 
   window.open(targetUrl, '_blank', 'noopener,noreferrer');
-  updateShareStatus('Ventana de compartir abierta. Revisa el texto y publica cuando quieras.');
+  updateShareStatus('Ventana de compartir abierta con tu resultado y el enlace al test.');
 }
 
 questions.forEach((question, index) => {
