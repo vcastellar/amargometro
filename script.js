@@ -142,6 +142,7 @@ const scoreValue = document.getElementById('score-value');
 const resultTitle = document.getElementById('result-title');
 const resultDescription = document.getElementById('result-description');
 const resultCategoryName = document.getElementById('result-category-name');
+const shareStatus = document.getElementById('share-status');
 const quizStatus = document.getElementById('quiz-status');
 const deviceHint = document.getElementById('device-hint');
 const root = document.documentElement;
@@ -150,6 +151,69 @@ const totalMaxScore = questions.reduce((sum, question) => sum + question.weight,
 meterMax.textContent = totalMaxScore;
 
 let currentDeviceProfile = 'desktop';
+let lastCalculatedResult = null;
+
+function buildShareText() {
+  const pageUrl = window.location.href;
+
+  if (!lastCalculatedResult) {
+    return `Haz el test del Amargómetro Supremo y descubre tu nivel de amargura: ${pageUrl}`;
+  }
+
+  return `Mi resultado en el Amargómetro Supremo: ${lastCalculatedResult.title} (${lastCalculatedResult.category}) con ${lastCalculatedResult.score}/${totalMaxScore} puntos. Haz el test aquí: ${pageUrl}`;
+}
+
+async function copyShareTextToClipboard(text) {
+  if (!navigator.clipboard?.writeText) {
+    return false;
+  }
+
+  await navigator.clipboard.writeText(text);
+  return true;
+}
+
+function updateShareStatus(message) {
+  if (shareStatus) {
+    shareStatus.textContent = message;
+  }
+}
+
+async function shareResult(platform) {
+  const text = buildShareText();
+  const encodedText = encodeURIComponent(text);
+  const encodedUrl = encodeURIComponent(window.location.href);
+
+  if (platform === 'instagram') {
+    try {
+      const copied = await copyShareTextToClipboard(text);
+      updateShareStatus(
+        copied
+          ? 'Texto copiado para Instagram. Ahora pégalo en tu historia o publicación e incluye el enlace del test.'
+          : 'No pudimos copiar automáticamente. Copia el texto manualmente y compártelo en Instagram con el enlace del test.',
+      );
+    } catch {
+      updateShareStatus('No pudimos copiar automáticamente. Copia el texto manualmente y compártelo en Instagram con el enlace del test.');
+    }
+
+    window.open('https://www.instagram.com/', '_blank', 'noopener,noreferrer');
+    return;
+  }
+
+  const shareUrls = {
+    whatsapp: `https://wa.me/?text=${encodedText}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`,
+    twitter: `https://twitter.com/intent/tweet?text=${encodedText}`,
+  };
+
+  const targetUrl = shareUrls[platform];
+
+  if (!targetUrl) {
+    return;
+  }
+
+  window.open(targetUrl, '_blank', 'noopener,noreferrer');
+  updateShareStatus('Ventana de compartir abierta. Revisa el texto y publica cuando quieras.');
+}
 
 questions.forEach((question, index) => {
   const clone = template.content.cloneNode(true);
@@ -278,11 +342,18 @@ function calculateResult() {
   const ratio = score / totalMaxScore;
   const band = resultBands.find((item) => ratio <= item.maxRatio) || lastResultBand;
 
+  lastCalculatedResult = {
+    score,
+    title: band.title,
+    category: band.category,
+  };
+
   meterBar.style.width = `${ratio * 100}%`;
   animateValue(score);
   resultCategoryName.textContent = band.category;
   resultTitle.textContent = band.title;
   resultDescription.textContent = band.description;
+  updateShareStatus('');
   document.querySelector('.result').scrollIntoView({
     behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth',
     block: 'start',
@@ -308,13 +379,27 @@ submitButton.addEventListener('click', calculateResult);
 
 resetButton.addEventListener('click', () => {
   form.reset();
+  lastCalculatedResult = null;
   meterBar.style.width = '0%';
   scoreValue.textContent = '0';
   resultCategoryName.textContent = 'Pendiente de diagnóstico';
   resultTitle.textContent = 'Responde el test, criatura.';
   resultDescription.textContent = 'Cuando termines, te diremos si eres un rayo de sol o una auditoría con piernas.';
+  updateShareStatus('');
   updateQuestionStates();
   window.scrollTo({ top: 0, behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth' });
+});
+
+document.querySelectorAll('.share-btn').forEach((button) => {
+  button.addEventListener('click', () => {
+    const platform = button.getAttribute('data-platform');
+
+    if (!platform) {
+      return;
+    }
+
+    shareResult(platform);
+  });
 });
 
 applyDeviceProfile();
