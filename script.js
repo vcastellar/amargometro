@@ -4,7 +4,7 @@ const questions = [
     weight: 5,
   },
   {
-    text: 'Si un niño te saluda por la calle, ¿le sonríes en lugar de mirar el móvil con intensidad?',
+    text: '¿Posas encantado cuando alguien propone una foto de grupo, sin esfumarte como si la cámara te fuera a absorber el alma?',
     weight: 6,
   },
   {
@@ -28,7 +28,7 @@ const questions = [
     weight: 8,
   },
   {
-    text: '¿Crees que hoy puede ser un gran día aunque no te haya tocado la lotería?',
+    text: '¿Aceptas un cumplido sin gruñir ni mirar al suelo como si te estuvieran robando el alma?',
     weight: 6,
   },
   {
@@ -64,7 +64,7 @@ const questions = [
     weight: 8,
   },
   {
-    text: 'Si un amigo te cuenta un proyecto con ilusión, ¿te guardas tu "realismo tóxico" y no le hundes la moral en los primeros cinco minutos?',
+    text: '¿Eres capaz de felicitar a alguien sin que tu voz suene como un motor gripado?',
     weight: 8,
   },
   {
