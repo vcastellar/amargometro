@@ -371,7 +371,17 @@ form.addEventListener('change', (event) => {
     return;
   }
 
+  const card = target.closest('.question-card');
+  const wasCurrent = card?.classList.contains('is-current') ?? false;
+  const currentIndex = Number(card?.dataset.index ?? -1);
+
   updateQuestionStates();
+
+  if (!wasCurrent || currentIndex < 0) {
+    return;
+  }
+
+  scrollToQuestion(currentIndex + 1);
 });
 
 startButton?.addEventListener('click', () => {
