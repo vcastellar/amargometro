@@ -142,6 +142,7 @@ const scoreValue = document.getElementById('score-value');
 const resultTitle = document.getElementById('result-title');
 const resultDescription = document.getElementById('result-description');
 const resultCategoryName = document.getElementById('result-category-name');
+const resultAffiliate = document.getElementById('result-affiliate');
 const shareStatus = document.getElementById('share-status');
 const quizStatus = document.getElementById('quiz-status');
 const deviceHint = document.getElementById('device-hint');
@@ -332,6 +333,9 @@ function calculateResult() {
     resultCategoryName.textContent = 'Diagnóstico bloqueado';
     resultTitle.textContent = 'Te has dejado preguntas sin responder, alma de cántaro.';
     resultDescription.textContent = `Completa la pregunta ${unanswered + 1} para que podamos juzgarte con datos y no solo por intuición.`;
+    if (resultAffiliate) {
+      resultAffiliate.hidden = true;
+    }
     scrollToQuestion(unanswered);
     return;
   }
@@ -357,6 +361,9 @@ function calculateResult() {
   resultCategoryName.textContent = band.category;
   resultTitle.textContent = band.title;
   resultDescription.textContent = band.description;
+  if (resultAffiliate) {
+    resultAffiliate.hidden = false;
+  }
   updateShareStatus('');
   document.querySelector('.result').scrollIntoView({
     behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth',
@@ -371,7 +378,17 @@ form.addEventListener('change', (event) => {
     return;
   }
 
+  const card = target.closest('.question-card');
+  const wasCurrent = card?.classList.contains('is-current') ?? false;
+  const currentIndex = Number(card?.dataset.index ?? -1);
+
   updateQuestionStates();
+
+  if (!wasCurrent || currentIndex < 0) {
+    return;
+  }
+
+  scrollToQuestion(currentIndex + 1);
 });
 
 startButton?.addEventListener('click', () => {
@@ -389,6 +406,9 @@ resetButton.addEventListener('click', () => {
   resultCategoryName.textContent = 'Pendiente de diagnóstico';
   resultTitle.textContent = 'Responde el test, criatura.';
   resultDescription.textContent = 'Cuando termines, te diremos si eres un rayo de sol o una auditoría con piernas.';
+  if (resultAffiliate) {
+    resultAffiliate.hidden = true;
+  }
   updateShareStatus('');
   updateQuestionStates();
   window.scrollTo({ top: 0, behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth' });
@@ -407,5 +427,8 @@ document.querySelectorAll('.share-btn').forEach((button) => {
 });
 
 applyDeviceProfile();
+if (resultAffiliate) {
+  resultAffiliate.hidden = true;
+}
 updateQuestionStates();
 window.addEventListener('resize', applyDeviceProfile, { passive: true });

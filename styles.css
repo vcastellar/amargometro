@@ -181,6 +181,57 @@ h2 {
   line-height: 1.6;
 }
 
+.affiliate-section {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  gap: 0.8rem;
+}
+
+.affiliate-section h2 {
+  margin-bottom: 0.2rem;
+}
+
+.affiliate-section h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.affiliate-disclaimer {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.96rem;
+  line-height: 1.6;
+}
+
+.affiliate-copy {
+  margin: 0;
+  color: #fff1e4;
+  font-weight: 700;
+}
+
+.affiliate-cover-link {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.6rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 184, 107, 0.42);
+  background: linear-gradient(135deg, rgba(255, 138, 61, 0.2), rgba(255, 77, 109, 0.15));
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+.affiliate-cover-link:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.affiliate-cover-link img {
+  display: block;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
 .instructions .primary-btn {
   margin-top: 0.75rem;
 }
@@ -353,7 +404,7 @@ h2 {
 
 .share-buttons {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 0.6rem;
 }
 
@@ -382,19 +433,18 @@ h2 {
 }
 
 :root[data-device='desktop'] .layout {
-  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  grid-template-columns: 1fr;
   align-items: start;
 }
 
 :root[data-device='desktop'] .hero,
-:root[data-device='desktop'] .quiz {
+:root[data-device='desktop'] .quiz,
+:root[data-device='desktop'] .result {
   grid-column: 1;
 }
 
 :root[data-device='desktop'] .result {
-  grid-column: 2;
-  position: sticky;
-  top: 1.25rem;
+  position: static;
 }
 
 :root[data-device='mobile'] html {
