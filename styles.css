@@ -181,6 +181,45 @@ h2 {
   line-height: 1.6;
 }
 
+.affiliate-block {
+  margin: 0 0 1.4rem;
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.affiliate-label {
+  margin-bottom: 0.35rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.affiliate-block p {
+  margin-bottom: 0.55rem;
+}
+
+.affiliate-block a {
+  color: #ffd8b8;
+  font-weight: 700;
+}
+
+.affiliate-disclaimer {
+  margin-bottom: 0.9rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.affiliate-cover {
+  width: min(220px, 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
 .instructions .primary-btn {
   margin-top: 0.75rem;
 }
