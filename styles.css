@@ -182,13 +182,20 @@ h2 {
 }
 
 .affiliate-section {
-  padding: 1.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: grid;
   gap: 0.8rem;
 }
 
 .affiliate-section h2 {
   margin-bottom: 0.2rem;
+}
+
+.affiliate-section h3 {
+  margin: 0;
+  font-size: 1.35rem;
 }
 
 .affiliate-disclaimer {
@@ -431,7 +438,6 @@ h2 {
 }
 
 :root[data-device='desktop'] .hero,
-:root[data-device='desktop'] .affiliate-section,
 :root[data-device='desktop'] .quiz,
 :root[data-device='desktop'] .result {
   grid-column: 1;
