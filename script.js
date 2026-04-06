@@ -139,6 +139,7 @@ meterMax.textContent = totalMaxScore;
 let currentDeviceProfile = 'desktop';
 let lastCalculatedResult = null;
 let responseStartedAt = null;
+const responseTimeline = new Map();
 const testUrl = window.location.origin + window.location.pathname;
 
 function buildShareText() {
@@ -312,12 +313,31 @@ function scrollToQuestion(index) {
   });
 }
 
-function registerResponseTiming() {
+function registerResponseTiming(questionIndex) {
   const now = performance.now();
 
   if (responseStartedAt === null) {
     responseStartedAt = now;
   }
+
+  if (!Number.isInteger(questionIndex) || questionIndex < 0 || questionIndex >= questions.length) {
+    return;
+  }
+
+  const previousEntry = responseTimeline.get(questionIndex);
+
+  if (!previousEntry) {
+    responseTimeline.set(questionIndex, {
+      firstAnsweredAt: now,
+      lastAnsweredAt: now,
+    });
+    return;
+  }
+
+  responseTimeline.set(questionIndex, {
+    firstAnsweredAt: previousEntry.firstAnsweredAt,
+    lastAnsweredAt: now,
+  });
 }
 
 function detectRandomResponses() {
@@ -332,7 +352,15 @@ function detectRandomResponses() {
   }
 
   const elapsedSeconds = (performance.now() - responseStartedAt) / 1000;
-  return elapsedSeconds < 30;
+  const averageSecondsPerQuestion = elapsedSeconds / questions.length;
+  const changedAnswers = [...responseTimeline.values()].filter(
+    (entry) => entry.lastAnsweredAt - entry.firstAnsweredAt > 450,
+  ).length;
+
+  const isSuspiciouslyFast = elapsedSeconds < 40 || averageSecondsPerQuestion < 2.8;
+  const hardlyReviewedAnswers = changedAnswers <= 1;
+
+  return isSuspiciouslyFast && hardlyReviewedAnswers;
 }
 
 function updateRandomBannerVisibility(isRandomLikely) {
@@ -398,11 +426,10 @@ form.addEventListener('change', (event) => {
     return;
   }
 
-  registerResponseTiming();
-
   const card = target.closest('.question-card');
   const wasCurrent = Boolean(card && card.classList.contains('is-current'));
   const currentIndex = Number(card && card.dataset ? card.dataset.index : -1);
+  registerResponseTiming(currentIndex);
 
   updateQuestionStates();
 
@@ -429,6 +456,7 @@ resetButton.addEventListener('click', () => {
   form.reset();
   lastCalculatedResult = null;
   responseStartedAt = null;
+  responseTimeline.clear();
   meterBar.style.width = '0%';
   scoreValue.textContent = '0';
   resultCategoryName.textContent = 'Pendiente de diagnóstico';
