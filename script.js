@@ -131,6 +131,7 @@ const shareStatus = document.getElementById('share-status');
 const quizStatus = document.getElementById('quiz-status');
 const deviceHint = document.getElementById('device-hint');
 const randomBanner = document.getElementById('random-banner');
+const fastWarning = document.getElementById('fast-warning');
 const root = document.documentElement;
 
 const totalMaxScore = questions.reduce((sum, question) => sum + question.weight, 0);
@@ -371,7 +372,24 @@ function updateRandomBannerVisibility(isRandomLikely) {
   randomBanner.hidden = !isRandomLikely;
 }
 
+function showFastWarning() {
+  if (!fastWarning) {
+    return;
+  }
+
+  fastWarning.hidden = false;
+}
+
+function hideFastWarning() {
+  if (!fastWarning) {
+    return;
+  }
+
+  fastWarning.hidden = true;
+}
+
 function calculateResult() {
+  hideFastWarning();
   const unanswered = questions.findIndex((_, index) => !getSelectedValue(index));
 
   if (unanswered !== -1) {
@@ -397,6 +415,12 @@ function calculateResult() {
   const band = resultBands.find((item) => ratio <= item.maxRatio) || lastResultBand;
   const isRandomLikely = detectRandomResponses();
 
+  if (isRandomLikely) {
+    updateRandomBannerVisibility(true);
+    showFastWarning();
+    return;
+  }
+
   lastCalculatedResult = {
     score,
     title: band.title,
@@ -411,7 +435,7 @@ function calculateResult() {
   if (resultAffiliate) {
     resultAffiliate.hidden = false;
   }
-  updateRandomBannerVisibility(isRandomLikely);
+  updateRandomBannerVisibility(false);
   updateShareStatus('');
   document.querySelector('.result').scrollIntoView({
     behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth',
@@ -457,6 +481,7 @@ resetButton.addEventListener('click', () => {
   lastCalculatedResult = null;
   responseStartedAt = null;
   responseTimeline.clear();
+  hideFastWarning();
   meterBar.style.width = '0%';
   scoreValue.textContent = '0';
   resultCategoryName.textContent = 'Pendiente de diagnóstico';

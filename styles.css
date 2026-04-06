@@ -170,9 +170,34 @@ h2 {
 }
 
 .quiz-actions {
+  position: relative;
   margin-top: 1.5rem;
   display: flex;
   justify-content: flex-end;
+}
+
+.fast-warning {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.75rem);
+  width: min(100%, 420px);
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 77, 109, 0.55);
+  background: linear-gradient(135deg, rgba(255, 77, 109, 0.24), rgba(255, 138, 61, 0.17));
+  color: #ffe3d4;
+  box-shadow: 0 10px 25px rgba(255, 77, 109, 0.25);
+}
+
+.fast-warning-title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.fast-warning-text {
+  margin: 0.45rem 0 0;
+  color: #fff2ea;
+  line-height: 1.5;
 }
 
 .quiz-status {
@@ -504,6 +529,12 @@ h2 {
 
   .options {
     flex-direction: column;
+  }
+
+  .fast-warning {
+    left: 0;
+    right: 0;
+    width: 100%;
   }
 
   .share-buttons {
