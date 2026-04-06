@@ -139,7 +139,6 @@ meterMax.textContent = totalMaxScore;
 let currentDeviceProfile = 'desktop';
 let lastCalculatedResult = null;
 let responseStartedAt = null;
-const responseTimeline = new Map();
 const testUrl = window.location.origin + window.location.pathname;
 
 function buildShareText() {
@@ -313,25 +312,26 @@ function scrollToQuestion(index) {
   });
 }
 
-function registerResponseTiming(questionName) {
+function registerResponseTiming() {
   const now = performance.now();
 
-  if (!responseStartedAt) {
+  if (responseStartedAt === null) {
     responseStartedAt = now;
-  }
-
-  if (!responseTimeline.has(questionName)) {
-    responseTimeline.set(questionName, now);
   }
 }
 
 function detectRandomResponses() {
-  if (responseTimeline.size !== questions.length || !responseStartedAt) {
+  if (responseStartedAt === null) {
     return false;
   }
 
-  const orderedTimes = [...responseTimeline.values()].sort((a, b) => a - b);
-  const elapsedSeconds = (orderedTimes[orderedTimes.length - 1] - responseStartedAt) / 1000;
+  const answeredCount = questions.filter((_, index) => Boolean(getSelectedValue(index))).length;
+
+  if (answeredCount !== questions.length) {
+    return false;
+  }
+
+  const elapsedSeconds = (performance.now() - responseStartedAt) / 1000;
   return elapsedSeconds < 30;
 }
 
@@ -398,7 +398,7 @@ form.addEventListener('change', (event) => {
     return;
   }
 
-  registerResponseTiming(target.name);
+  registerResponseTiming();
 
   const card = target.closest('.question-card');
   const wasCurrent = Boolean(card && card.classList.contains('is-current'));
@@ -429,7 +429,6 @@ resetButton.addEventListener('click', () => {
   form.reset();
   lastCalculatedResult = null;
   responseStartedAt = null;
-  responseTimeline.clear();
   meterBar.style.width = '0%';
   scoreValue.textContent = '0';
   resultCategoryName.textContent = 'Pendiente de diagnóstico';
