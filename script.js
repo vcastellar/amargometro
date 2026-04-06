@@ -1,11 +1,11 @@
 const questions = [
   {
     text: '¿Posas encantado cuando alguien propone una foto de grupo, sin esfumarte como si la cámara te fuera a absorber el alma?',
-    weight: ,
+    weight: 5,
   },
   {
     text: '¿Puedes ir al supermercado un sábado por la tarde sin desear que un rayo desintegre a la gente que camina lento?',
-    weight: ,
+    weight: 8,
   },
   {
     text: 'Si un amigo te cuenta un proyecto con ilusión, ¿evitas listarle inmediatamente los 10 motivos por los que va a fracasar?',
