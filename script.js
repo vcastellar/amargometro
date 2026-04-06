@@ -1,15 +1,11 @@
 const questions = [
   {
     text: '¿Posas encantado cuando alguien propone una foto de grupo, sin esfumarte como si la cámara te fuera a absorber el alma?',
-    weight: 4,
-  },
-  {
-    text: '¿Ves un video de un perrito tierno sin pensar en la cantidad de pelos que debe soltar en el sofá?',
-    weight: 3,
+    weight: ,
   },
   {
     text: '¿Puedes ir al supermercado un sábado por la tarde sin desear que un rayo desintegre a la gente que camina lento?',
-    weight: 8,
+    weight: ,
   },
   {
     text: 'Si un amigo te cuenta un proyecto con ilusión, ¿evitas listarle inmediatamente los 10 motivos por los que va a fracasar?',
@@ -29,18 +25,14 @@ const questions = [
   },
   {
     text: '¿Puedes escuchar el éxito de reggaetón del verano sin dar un discurso no solicitado sobre la muerte de la cultura occidental?',
-    weight: 6,
+    weight: 8,
   },
   {
     text: 'Si un niño te sonríe en el transporte público, ¿le devuelves el gesto en lugar de mirar al infinito con cara de "por qué no se callará"?',
-    weight: 4,
+    weight: 6,
   },
   {
     text: '¿Ves un vídeo de un cachorro y piensas en su ternura antes que en el olor a perro mojado y las facturas del veterinario?',
-    weight: 3,
-  },
-  {
-    text: '¿Eres capaz de admitir que hace un día bonito sin añadir un: "bueno, pero mañana seguro que refresca"?',
     weight: 5,
   },
   {
@@ -49,7 +41,7 @@ const questions = [
   },
   {
     text: '¿Eres capaz de felicitar a alguien sin que tu voz suene como un motor gripado?',
-    weight: 6,
+    weight: 7,
   },
   {
     text: '¿Crees que es posible que te pase algo bueno hoy sin que sea una trampa del destino para fastidiarte mañana?',
