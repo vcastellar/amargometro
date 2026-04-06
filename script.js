@@ -148,7 +148,7 @@ function buildShareText() {
 }
 
 async function copyShareTextToClipboard(text) {
-  if (!navigator.clipboard?.writeText) {
+  if (!navigator.clipboard || typeof navigator.clipboard.writeText !== 'function') {
     return false;
   }
 
@@ -180,7 +180,7 @@ async function shareResult(platform) {
           ? 'Texto copiado para Instagram. Ahora pégalo en tu historia o publicación e incluye el enlace del test.'
           : 'No pudimos copiar automáticamente. Copia el texto manualmente y compártelo en Instagram con el enlace del test.',
       );
-    } catch {
+    } catch (error) {
       updateShareStatus('No pudimos copiar automáticamente. Copia el texto manualmente y compártelo en Instagram con el enlace del test.');
     }
 
@@ -227,7 +227,8 @@ const questionCards = [...form.querySelectorAll('.question-card')];
 const lastResultBand = resultBands[resultBands.length - 1];
 
 function getSelectedValue(index) {
-  return form.querySelector(`input[name="question-${index}"]:checked`)?.value;
+  const selectedInput = form.querySelector(`input[name="question-${index}"]:checked`);
+  return selectedInput ? selectedInput.value : undefined;
 }
 
 function detectDeviceProfile() {
@@ -363,8 +364,8 @@ form.addEventListener('change', (event) => {
   }
 
   const card = target.closest('.question-card');
-  const wasCurrent = card?.classList.contains('is-current') ?? false;
-  const currentIndex = Number(card?.dataset.index ?? -1);
+  const wasCurrent = Boolean(card && card.classList.contains('is-current'));
+  const currentIndex = Number(card && card.dataset ? card.dataset.index : -1);
 
   updateQuestionStates();
 
@@ -375,10 +376,15 @@ form.addEventListener('change', (event) => {
   scrollToQuestion(currentIndex + 1);
 });
 
-startButton?.addEventListener('click', () => {
-  scrollToQuestion(0);
-  form.querySelector('input')?.focus({ preventScroll: true });
-});
+if (startButton) {
+  startButton.addEventListener('click', () => {
+    scrollToQuestion(0);
+    const firstInput = form.querySelector('input');
+    if (firstInput) {
+      firstInput.focus({ preventScroll: true });
+    }
+  });
+}
 
 submitButton.addEventListener('click', calculateResult);
 
