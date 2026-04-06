@@ -355,15 +355,7 @@ function detectRandomResponses() {
   }
 
   const elapsedSeconds = (performance.now() - responseStartedAt) / 1000;
-  const averageSecondsPerQuestion = elapsedSeconds / questions.length;
-  const changedAnswers = [...responseTimeline.values()].filter(
-    (entry) => entry.lastAnsweredAt - entry.firstAnsweredAt > 450,
-  ).length;
-
-  const isSuspiciouslyFast = elapsedSeconds < 40 || averageSecondsPerQuestion < 2.8;
-  const hardlyReviewedAnswers = changedAnswers <= 1;
-
-  return isSuspiciouslyFast && hardlyReviewedAnswers;
+  return elapsedSeconds < 45;
 }
 
 function updateRandomBannerVisibility(isRandomLikely) {
@@ -546,6 +538,7 @@ applyDeviceProfile();
 if (resultAffiliate) {
   resultAffiliate.hidden = true;
 }
+hideFastModal();
 updateQuestionStates();
 window.addEventListener('resize', applyDeviceProfile, { passive: true });
 
