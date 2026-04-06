@@ -130,6 +130,7 @@ const resultAffiliate = document.getElementById('result-affiliate');
 const shareStatus = document.getElementById('share-status');
 const quizStatus = document.getElementById('quiz-status');
 const deviceHint = document.getElementById('device-hint');
+const randomBanner = document.getElementById('random-banner');
 const root = document.documentElement;
 
 const totalMaxScore = questions.reduce((sum, question) => sum + question.weight, 0);
@@ -137,6 +138,8 @@ meterMax.textContent = totalMaxScore;
 
 let currentDeviceProfile = 'desktop';
 let lastCalculatedResult = null;
+let responseStartedAt = null;
+const responseTimeline = new Map();
 const testUrl = window.location.origin + window.location.pathname;
 
 function buildShareText() {
@@ -310,6 +313,42 @@ function scrollToQuestion(index) {
   });
 }
 
+function registerResponseTiming(questionName) {
+  const now = performance.now();
+
+  if (!responseStartedAt) {
+    responseStartedAt = now;
+  }
+
+  if (!responseTimeline.has(questionName)) {
+    responseTimeline.set(questionName, now);
+  }
+}
+
+function detectRandomResponses() {
+  if (responseTimeline.size !== questions.length) {
+    return false;
+  }
+
+  const orderedTimes = [...responseTimeline.values()].sort((a, b) => a - b);
+  const elapsedSeconds = (orderedTimes[orderedTimes.length - 1] - responseStartedAt) / 1000;
+  const intervals = orderedTimes.slice(1).map((time, index) => (time - orderedTimes[index]) / 1000);
+  const averageInterval = intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
+
+  const suspiciouslyFastTotal = elapsedSeconds <= questions.length * 1.8;
+  const suspiciouslyFastAverage = averageInterval <= 1.6;
+
+  return suspiciouslyFastTotal && suspiciouslyFastAverage;
+}
+
+function updateRandomBannerVisibility(isRandomLikely) {
+  if (!randomBanner) {
+    return;
+  }
+
+  randomBanner.hidden = !isRandomLikely;
+}
+
 function calculateResult() {
   const unanswered = questions.findIndex((_, index) => !getSelectedValue(index));
 
@@ -334,6 +373,7 @@ function calculateResult() {
 
   const ratio = score / totalMaxScore;
   const band = resultBands.find((item) => ratio <= item.maxRatio) || lastResultBand;
+  const isRandomLikely = detectRandomResponses();
 
   lastCalculatedResult = {
     score,
@@ -349,6 +389,7 @@ function calculateResult() {
   if (resultAffiliate) {
     resultAffiliate.hidden = false;
   }
+  updateRandomBannerVisibility(isRandomLikely);
   updateShareStatus('');
   document.querySelector('.result').scrollIntoView({
     behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth',
@@ -362,6 +403,8 @@ form.addEventListener('change', (event) => {
   if (!(target instanceof HTMLInputElement) || target.type !== 'radio') {
     return;
   }
+
+  registerResponseTiming(target.name);
 
   const card = target.closest('.question-card');
   const wasCurrent = Boolean(card && card.classList.contains('is-current'));
@@ -391,6 +434,8 @@ submitButton.addEventListener('click', calculateResult);
 resetButton.addEventListener('click', () => {
   form.reset();
   lastCalculatedResult = null;
+  responseStartedAt = null;
+  responseTimeline.clear();
   meterBar.style.width = '0%';
   scoreValue.textContent = '0';
   resultCategoryName.textContent = 'Pendiente de diagnóstico';
@@ -399,6 +444,7 @@ resetButton.addEventListener('click', () => {
   if (resultAffiliate) {
     resultAffiliate.hidden = true;
   }
+  updateRandomBannerVisibility(false);
   updateShareStatus('');
   updateQuestionStates();
   window.scrollTo({ top: 0, behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth' });
