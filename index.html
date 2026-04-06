@@ -131,6 +131,18 @@
       </section>
     </main>
 
+    <div id="fast-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="fast-modal-title" hidden>
+      <section class="modal-card">
+        <h3 id="fast-modal-title">⚠️ Has respondido demasiado rápido</h3>
+        <p>
+          Hemos detectado respuestas en modo turbo. Para evitar resultados a boleo, esta vez
+          <strong>no vamos a calcular tu puntuación</strong>.
+        </p>
+        <p>Repite el test con más calma y vuelve a pulsar <strong>Calcular puntuación</strong>.</p>
+        <button id="fast-modal-close" class="primary-btn" type="button">Entendido</button>
+      </section>
+    </div>
+
     <template id="question-template">
       <article class="question-card">
         <div class="question-top">

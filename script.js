@@ -132,6 +132,8 @@ const quizStatus = document.getElementById('quiz-status');
 const deviceHint = document.getElementById('device-hint');
 const randomBanner = document.getElementById('random-banner');
 const fastWarning = document.getElementById('fast-warning');
+const fastModal = document.getElementById('fast-modal');
+const fastModalCloseButton = document.getElementById('fast-modal-close');
 const root = document.documentElement;
 
 const totalMaxScore = questions.reduce((sum, question) => sum + question.weight, 0);
@@ -388,6 +390,25 @@ function hideFastWarning() {
   fastWarning.hidden = true;
 }
 
+function showFastModal() {
+  if (!fastModal) {
+    return;
+  }
+
+  fastModal.hidden = false;
+  if (fastModalCloseButton) {
+    fastModalCloseButton.focus({ preventScroll: true });
+  }
+}
+
+function hideFastModal() {
+  if (!fastModal) {
+    return;
+  }
+
+  fastModal.hidden = true;
+}
+
 function calculateResult() {
   hideFastWarning();
   const unanswered = questions.findIndex((_, index) => !getSelectedValue(index));
@@ -418,6 +439,18 @@ function calculateResult() {
   if (isRandomLikely) {
     updateRandomBannerVisibility(true);
     showFastWarning();
+    showFastModal();
+    lastCalculatedResult = null;
+    meterBar.style.width = '0%';
+    scoreValue.textContent = '0';
+    resultCategoryName.textContent = 'Diagnóstico bloqueado por respuestas rápidas';
+    resultTitle.textContent = 'Nada de atajos: repite el test con calma.';
+    resultDescription.textContent =
+      'Detectamos respuestas sospechosamente rápidas. Vuelve a intentarlo y calcularemos tu nivel real de amargura.';
+    if (resultAffiliate) {
+      resultAffiliate.hidden = true;
+    }
+    updateShareStatus('');
     return;
   }
 
@@ -482,6 +515,7 @@ resetButton.addEventListener('click', () => {
   responseStartedAt = null;
   responseTimeline.clear();
   hideFastWarning();
+  hideFastModal();
   meterBar.style.width = '0%';
   scoreValue.textContent = '0';
   resultCategoryName.textContent = 'Pendiente de diagnóstico';
@@ -514,3 +548,15 @@ if (resultAffiliate) {
 }
 updateQuestionStates();
 window.addEventListener('resize', applyDeviceProfile, { passive: true });
+
+if (fastModal) {
+  fastModal.addEventListener('click', (event) => {
+    if (event.target === fastModal) {
+      hideFastModal();
+    }
+  });
+}
+
+if (fastModalCloseButton) {
+  fastModalCloseButton.addEventListener('click', hideFastModal);
+}
