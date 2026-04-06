@@ -326,19 +326,13 @@ function registerResponseTiming(questionName) {
 }
 
 function detectRandomResponses() {
-  if (responseTimeline.size !== questions.length) {
+  if (responseTimeline.size !== questions.length || !responseStartedAt) {
     return false;
   }
 
   const orderedTimes = [...responseTimeline.values()].sort((a, b) => a - b);
   const elapsedSeconds = (orderedTimes[orderedTimes.length - 1] - responseStartedAt) / 1000;
-  const intervals = orderedTimes.slice(1).map((time, index) => (time - orderedTimes[index]) / 1000);
-  const averageInterval = intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
-
-  const suspiciouslyFastTotal = elapsedSeconds <= questions.length * 1.8;
-  const suspiciouslyFastAverage = averageInterval <= 1.6;
-
-  return suspiciouslyFastTotal && suspiciouslyFastAverage;
+  return elapsedSeconds < 30;
 }
 
 function updateRandomBannerVisibility(isRandomLikely) {
