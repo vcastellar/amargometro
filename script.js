@@ -1,23 +1,11 @@
 const questions = [
   {
-    text: '¿Escuchas una canción de moda en la radio sin decir que "la música de antes sí que valía la pena"?',
-    weight: 5,
-  },
-  {
     text: '¿Posas encantado cuando alguien propone una foto de grupo, sin esfumarte como si la cámara te fuera a absorber el alma?',
     weight: 6,
   },
   {
-    text: '¿Eres capaz de entrar a un grupo de WhatsApp y ver un sticker de "Feliz Jueves" sin que te suba la tensión?',
-    weight: 7,
-  },
-  {
     text: '¿Ves un video de un perrito tierno sin pensar en la cantidad de pelos que debe soltar en el sofá?',
     weight: 5,
-  },
-  {
-    text: '¿Crees que el lunes es simplemente un día más y no un ataque personal del universo contra ti?',
-    weight: 7,
   },
   {
     text: '¿Puedes ir al supermercado un sábado por la tarde sin desear que un rayo desintegre a la gente que camina lento?',
@@ -46,10 +34,6 @@ const questions = [
   {
     text: 'Si un niño te sonríe en el transporte público, ¿le devuelves el gesto en lugar de mirar al infinito con cara de "por qué no se callará"?',
     weight: 6,
-  },
-  {
-    text: '¿Puedes ver un mensaje de "Feliz Jueves" con un gatito en el grupo de la familia sin sentir un impulso violento de abandonar el chat?',
-    weight: 8,
   },
   {
     text: '¿Ves un vídeo de un cachorro y piensas en su ternura antes que en el olor a perro mojado y las facturas del veterinario?',
