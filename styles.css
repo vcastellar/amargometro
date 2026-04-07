@@ -72,6 +72,10 @@ body {
   padding: 1.5rem;
 }
 
+.extra-tests {
+  padding: 1.5rem;
+}
+
 .legal-note h2 {
   margin-bottom: 0.9rem;
 }
@@ -84,6 +88,35 @@ body {
 
 .legal-note p:last-child {
   margin-bottom: 0;
+}
+
+.extra-tests p {
+  margin: 0 0 0.8rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.extra-tests p:last-of-type {
+  margin-bottom: 1rem;
+}
+
+.extra-test-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.8rem 1.2rem;
+  font-weight: 700;
+  color: #1b110d;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--accent), #ffb86b);
+  box-shadow: 0 12px 32px rgba(255, 138, 61, 0.35);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.extra-test-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(255, 138, 61, 0.42);
 }
 
 .eyebrow {
