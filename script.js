@@ -458,9 +458,7 @@ function calculateResult() {
     resultTitle.textContent = 'Nada de atajos: repite el test con calma.';
     resultDescription.textContent =
       'Detectamos respuestas sospechosamente rápidas. Vuelve a intentarlo y calcularemos tu nivel real de amargura.';
-    if (resultAffiliate) {
-      resultAffiliate.hidden = true;
-    }
+    setElementHidden(resultAffiliate, false);
     updateShareStatus('');
     return;
   }
