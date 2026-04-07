@@ -1,6 +1,6 @@
 const questions = [
   {
-    text: '¿Posas encantado cuando alguien propone una foto de grupo, sin esfumarte como si la cámara te fuera a absorber el alma?',
+    text: 'Posas encantado cuando alguien propone una foto de grupo, o huyes como si cada flash te quitara un año de vida?',
     weight: 5,
   },
   {
@@ -139,6 +139,17 @@ const root = document.documentElement;
 const totalMaxScore = questions.reduce((sum, question) => sum + question.weight, 0);
 meterMax.textContent = totalMaxScore;
 
+const smoothBehavior = {
+  mobile: 'auto',
+  desktop: 'smooth',
+};
+
+const defaultResultState = {
+  category: 'Pendiente de diagnóstico',
+  title: 'Responde el test, criatura.',
+  description: 'Cuando termines, te diremos si eres un rayo de sol o una auditoría con piernas.',
+};
+
 let currentDeviceProfile = 'desktop';
 let lastCalculatedResult = null;
 let responseStartedAt = null;
@@ -166,6 +177,21 @@ function updateShareStatus(message) {
   if (shareStatus) {
     shareStatus.textContent = message;
   }
+}
+
+function setElementHidden(element, hidden) {
+  if (element) {
+    element.hidden = hidden;
+  }
+}
+
+function resetResultView() {
+  meterBar.style.width = '0%';
+  scoreValue.textContent = '0';
+  resultCategoryName.textContent = defaultResultState.category;
+  resultTitle.textContent = defaultResultState.title;
+  resultDescription.textContent = defaultResultState.description;
+  setElementHidden(resultAffiliate, true);
 }
 
 async function shareResult(platform) {
@@ -311,7 +337,7 @@ function scrollToQuestion(index) {
   }
 
   nextCard.scrollIntoView({
-    behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth',
+    behavior: smoothBehavior[currentDeviceProfile],
     block: 'start',
   });
 }
@@ -359,27 +385,15 @@ function detectRandomResponses() {
 }
 
 function updateRandomBannerVisibility(isRandomLikely) {
-  if (!randomBanner) {
-    return;
-  }
-
-  randomBanner.hidden = !isRandomLikely;
+  setElementHidden(randomBanner, !isRandomLikely);
 }
 
 function showFastWarning() {
-  if (!fastWarning) {
-    return;
-  }
-
-  fastWarning.hidden = false;
+  setElementHidden(fastWarning, false);
 }
 
 function hideFastWarning() {
-  if (!fastWarning) {
-    return;
-  }
-
-  fastWarning.hidden = true;
+  setElementHidden(fastWarning, true);
 }
 
 function showFastModal() {
@@ -410,9 +424,7 @@ function calculateResult() {
     resultCategoryName.textContent = 'Diagnóstico bloqueado';
     resultTitle.textContent = 'Te has dejado preguntas sin responder, alma de cántaro.';
     resultDescription.textContent = `Completa la pregunta ${unanswered + 1} para que podamos juzgarte con datos y no solo por intuición.`;
-    if (resultAffiliate) {
-      resultAffiliate.hidden = true;
-    }
+    setElementHidden(resultAffiliate, true);
     scrollToQuestion(unanswered);
     return;
   }
@@ -457,15 +469,10 @@ function calculateResult() {
   resultCategoryName.textContent = band.category;
   resultTitle.textContent = band.title;
   resultDescription.textContent = band.description;
-  if (resultAffiliate) {
-    resultAffiliate.hidden = false;
-  }
+  setElementHidden(resultAffiliate, false);
   updateRandomBannerVisibility(false);
   updateShareStatus('');
-  document.querySelector('.result').scrollIntoView({
-    behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth',
-    block: 'start',
-  });
+  resultSection?.scrollIntoView({ behavior: smoothBehavior[currentDeviceProfile], block: 'start' });
 }
 
 form.addEventListener('change', (event) => {
@@ -519,7 +526,7 @@ resetButton.addEventListener('click', () => {
   updateRandomBannerVisibility(false);
   updateShareStatus('');
   updateQuestionStates();
-  window.scrollTo({ top: 0, behavior: currentDeviceProfile === 'mobile' ? 'auto' : 'smooth' });
+  window.scrollTo({ top: 0, behavior: smoothBehavior[currentDeviceProfile] });
 });
 
 document.querySelectorAll('.share-btn').forEach((button) => {
