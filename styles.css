@@ -68,6 +68,24 @@ body {
   padding: 1.5rem;
 }
 
+.legal-note {
+  padding: 1.5rem;
+}
+
+.legal-note h2 {
+  margin-bottom: 0.9rem;
+}
+
+.legal-note p {
+  margin: 0 0 0.8rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.legal-note p:last-child {
+  margin-bottom: 0;
+}
+
 .eyebrow {
   margin: 0 0 0.75rem;
   text-transform: uppercase;
@@ -533,7 +551,8 @@ h2 {
 
 :root[data-device='mobile'] .hero,
 :root[data-device='mobile'] .quiz,
-:root[data-device='mobile'] .result {
+:root[data-device='mobile'] .result,
+:root[data-device='mobile'] .legal-note {
   padding: 1.15rem;
 }
 
