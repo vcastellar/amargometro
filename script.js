@@ -132,7 +132,8 @@ const quizStatus = document.getElementById('quiz-status');
 const deviceHint = document.getElementById('device-hint');
 const randomBanner = document.getElementById('random-banner');
 const fastWarning = document.getElementById('fast-warning');
-const resultSection = document.querySelector('.result');
+const fastModal = document.getElementById('fast-modal');
+const fastModalCloseButton = document.getElementById('fast-modal-close');
 const root = document.documentElement;
 
 const totalMaxScore = questions.reduce((sum, question) => sum + question.weight, 0);
@@ -380,15 +381,7 @@ function detectRandomResponses() {
   }
 
   const elapsedSeconds = (performance.now() - responseStartedAt) / 1000;
-  const averageSecondsPerQuestion = elapsedSeconds / questions.length;
-  const changedAnswers = [...responseTimeline.values()].filter(
-    (entry) => entry.lastAnsweredAt - entry.firstAnsweredAt > 450,
-  ).length;
-
-  const isSuspiciouslyFast = elapsedSeconds < 40 || averageSecondsPerQuestion < 2.8;
-  const hardlyReviewedAnswers = changedAnswers <= 1;
-
-  return isSuspiciouslyFast && hardlyReviewedAnswers;
+  return elapsedSeconds < 45;
 }
 
 function updateRandomBannerVisibility(isRandomLikely) {
@@ -401,6 +394,25 @@ function showFastWarning() {
 
 function hideFastWarning() {
   setElementHidden(fastWarning, true);
+}
+
+function showFastModal() {
+  if (!fastModal) {
+    return;
+  }
+
+  fastModal.hidden = false;
+  if (fastModalCloseButton) {
+    fastModalCloseButton.focus({ preventScroll: true });
+  }
+}
+
+function hideFastModal() {
+  if (!fastModal) {
+    return;
+  }
+
+  fastModal.hidden = true;
 }
 
 function calculateResult() {
@@ -431,6 +443,18 @@ function calculateResult() {
   if (isRandomLikely) {
     updateRandomBannerVisibility(true);
     showFastWarning();
+    showFastModal();
+    lastCalculatedResult = null;
+    meterBar.style.width = '0%';
+    scoreValue.textContent = '0';
+    resultCategoryName.textContent = 'Diagnóstico bloqueado por respuestas rápidas';
+    resultTitle.textContent = 'Nada de atajos: repite el test con calma.';
+    resultDescription.textContent =
+      'Detectamos respuestas sospechosamente rápidas. Vuelve a intentarlo y calcularemos tu nivel real de amargura.';
+    if (resultAffiliate) {
+      resultAffiliate.hidden = true;
+    }
+    updateShareStatus('');
     return;
   }
 
@@ -490,7 +514,15 @@ resetButton.addEventListener('click', () => {
   responseStartedAt = null;
   responseTimeline.clear();
   hideFastWarning();
-  resetResultView();
+  hideFastModal();
+  meterBar.style.width = '0%';
+  scoreValue.textContent = '0';
+  resultCategoryName.textContent = 'Pendiente de diagnóstico';
+  resultTitle.textContent = 'Responde el test, criatura.';
+  resultDescription.textContent = 'Cuando termines, te diremos si eres un rayo de sol o una auditoría con piernas.';
+  if (resultAffiliate) {
+    resultAffiliate.hidden = true;
+  }
   updateRandomBannerVisibility(false);
   updateShareStatus('');
   updateQuestionStates();
@@ -510,6 +542,21 @@ document.querySelectorAll('.share-btn').forEach((button) => {
 });
 
 applyDeviceProfile();
-setElementHidden(resultAffiliate, true);
+if (resultAffiliate) {
+  resultAffiliate.hidden = true;
+}
+hideFastModal();
 updateQuestionStates();
 window.addEventListener('resize', applyDeviceProfile, { passive: true });
+
+if (fastModal) {
+  fastModal.addEventListener('click', (event) => {
+    if (event.target === fastModal) {
+      hideFastModal();
+    }
+  });
+}
+
+if (fastModalCloseButton) {
+  fastModalCloseButton.addEventListener('click', hideFastModal);
+}
