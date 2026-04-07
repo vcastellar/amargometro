@@ -161,7 +161,7 @@ let currentDeviceProfile = 'desktop';
 let lastCalculatedResult = null;
 let responseStartedAt = null;
 const responseTimeline = new Map();
-const testUrl = window.location.origin + window.location.pathname;
+const testUrl = 'https://elamargometro.com';
 
 function buildShareText() {
   if (!lastCalculatedResult) {
