@@ -289,7 +289,7 @@ function applyDeviceProfile() {
 
   if (submitButton) {
     submitButton.textContent =
-      currentDeviceProfile === 'mobile' ? 'Calcular puntuación' : 'Calcular mi puntuación amarga';
+      currentDeviceProfile === 'mobile' ? 'Calcular puntuación' : 'Calcular mi puntuación';
   }
 }
 
