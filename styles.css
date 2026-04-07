@@ -73,7 +73,11 @@ body {
 }
 
 .extra-tests {
-  padding: 1.5rem;
+  padding: 1.75rem;
+}
+
+.extra-tests h2 {
+  margin-bottom: 0.9rem;
 }
 
 .legal-note h2 {
