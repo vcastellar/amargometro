@@ -137,10 +137,6 @@ const resultAffiliate = document.getElementById('result-affiliate');
 const shareStatus = document.getElementById('share-status');
 const quizStatus = document.getElementById('quiz-status');
 const deviceHint = document.getElementById('device-hint');
-const randomBanner = document.getElementById('random-banner');
-const fastWarning = document.getElementById('fast-warning');
-const fastModal = document.getElementById('fast-modal');
-const fastModalCloseButton = document.getElementById('fast-modal-close');
 const root = document.documentElement;
 
 const totalMaxScore = questions.reduce((sum, question) => sum + question.weight, 0);
@@ -159,8 +155,6 @@ const defaultResultState = {
 
 let currentDeviceProfile = 'desktop';
 let lastCalculatedResult = null;
-let responseStartedAt = null;
-const responseTimeline = new Map();
 const testUrl = 'https://elamargometro.com';
 
 function buildShareText() {
@@ -349,81 +343,7 @@ function scrollToQuestion(index) {
   });
 }
 
-function registerResponseTiming(questionIndex) {
-  const now = performance.now();
-
-  if (responseStartedAt === null) {
-    responseStartedAt = now;
-  }
-
-  if (!Number.isInteger(questionIndex) || questionIndex < 0 || questionIndex >= questions.length) {
-    return;
-  }
-
-  const previousEntry = responseTimeline.get(questionIndex);
-
-  if (!previousEntry) {
-    responseTimeline.set(questionIndex, {
-      firstAnsweredAt: now,
-      lastAnsweredAt: now,
-    });
-    return;
-  }
-
-  responseTimeline.set(questionIndex, {
-    firstAnsweredAt: previousEntry.firstAnsweredAt,
-    lastAnsweredAt: now,
-  });
-}
-
-function detectRandomResponses() {
-  if (responseStartedAt === null) {
-    return false;
-  }
-
-  const answeredCount = questions.filter((_, index) => Boolean(getSelectedValue(index))).length;
-
-  if (answeredCount !== questions.length) {
-    return false;
-  }
-
-  const elapsedSeconds = (performance.now() - responseStartedAt) / 1000;
-  return elapsedSeconds < 45;
-}
-
-function updateRandomBannerVisibility(isRandomLikely) {
-  setElementHidden(randomBanner, !isRandomLikely);
-}
-
-function showFastWarning() {
-  setElementHidden(fastWarning, false);
-}
-
-function hideFastWarning() {
-  setElementHidden(fastWarning, true);
-}
-
-function showFastModal() {
-  if (!fastModal) {
-    return;
-  }
-
-  fastModal.hidden = false;
-  if (fastModalCloseButton) {
-    fastModalCloseButton.focus({ preventScroll: true });
-  }
-}
-
-function hideFastModal() {
-  if (!fastModal) {
-    return;
-  }
-
-  fastModal.hidden = true;
-}
-
 function calculateResult() {
-  hideFastWarning();
   const unanswered = questions.findIndex((_, index) => !getSelectedValue(index));
 
   if (unanswered !== -1) {
@@ -445,25 +365,6 @@ function calculateResult() {
 
   const ratio = score / totalMaxScore;
   const band = resultBands.find((item) => ratio <= item.maxRatio) || lastResultBand;
-  const isRandomLikely = detectRandomResponses();
-
-  if (isRandomLikely) {
-    updateRandomBannerVisibility(true);
-    showFastWarning();
-    showFastModal();
-    lastCalculatedResult = null;
-    meterBar.style.width = '0%';
-    scoreValue.textContent = '0';
-    resultCategoryName.textContent = 'Diagnóstico bloqueado por respuestas rápidas';
-    resultTitle.textContent = 'Nada de atajos: repite el test con calma.';
-    resultDescription.textContent =
-      'Detectamos respuestas sospechosamente rápidas. Vuelve a intentarlo y calcularemos tu nivel real de amargura.';
-    if (resultAffiliate) {
-      resultAffiliate.hidden = true;
-    }
-    updateShareStatus('');
-    return;
-  }
 
   lastCalculatedResult = {
     score,
@@ -477,7 +378,6 @@ function calculateResult() {
   resultTitle.textContent = band.title;
   resultDescription.textContent = band.description;
   setElementHidden(resultAffiliate, false);
-  updateRandomBannerVisibility(false);
   updateShareStatus('');
   resultSection?.scrollIntoView({ behavior: smoothBehavior[currentDeviceProfile], block: 'start' });
 }
@@ -492,7 +392,6 @@ form.addEventListener('change', (event) => {
   const card = target.closest('.question-card');
   const wasCurrent = Boolean(card && card.classList.contains('is-current'));
   const currentIndex = Number(card && card.dataset ? card.dataset.index : -1);
-  registerResponseTiming(currentIndex);
 
   updateQuestionStates();
 
@@ -518,10 +417,6 @@ submitButton.addEventListener('click', calculateResult);
 resetButton.addEventListener('click', () => {
   form.reset();
   lastCalculatedResult = null;
-  responseStartedAt = null;
-  responseTimeline.clear();
-  hideFastWarning();
-  hideFastModal();
   meterBar.style.width = '0%';
   scoreValue.textContent = '0';
   resultCategoryName.textContent = 'Pendiente de diagnóstico';
@@ -530,7 +425,6 @@ resetButton.addEventListener('click', () => {
   if (resultAffiliate) {
     resultAffiliate.hidden = true;
   }
-  updateRandomBannerVisibility(false);
   updateShareStatus('');
   updateQuestionStates();
   window.scrollTo({ top: 0, behavior: smoothBehavior[currentDeviceProfile] });
@@ -552,18 +446,5 @@ applyDeviceProfile();
 if (resultAffiliate) {
   resultAffiliate.hidden = true;
 }
-hideFastModal();
 updateQuestionStates();
 window.addEventListener('resize', applyDeviceProfile, { passive: true });
-
-if (fastModal) {
-  fastModal.addEventListener('click', (event) => {
-    if (event.target === fastModal) {
-      hideFastModal();
-    }
-  });
-}
-
-if (fastModalCloseButton) {
-  fastModalCloseButton.addEventListener('click', hideFastModal);
-}
