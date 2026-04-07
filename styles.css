@@ -72,6 +72,10 @@ body {
   padding: 1.5rem;
 }
 
+.faq {
+  padding: 1.5rem;
+}
+
 .extra-tests {
   padding: 1.75rem;
 }
@@ -93,6 +97,34 @@ body {
 .legal-note p:last-child {
   margin-bottom: 0;
 }
+
+.faq h2 {
+  margin-bottom: 0.9rem;
+}
+
+.faq details {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.faq details:last-child {
+  margin-bottom: 0;
+}
+
+.faq summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.faq p {
+  margin: 0.65rem 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
 
 .extra-tests p {
   margin: 0 0 0.8rem;

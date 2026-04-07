@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Amargómetro Supremo</title>
+  <desc id="desc">Imagen social del test de amargura online.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#12121a" />
+      <stop offset="100%" stop-color="#1f1420" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff8a3d" />
+      <stop offset="100%" stop-color="#ff4d6d" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="1030" cy="120" r="170" fill="#ff8a3d" opacity="0.16" />
+  <circle cx="120" cy="560" r="190" fill="#ff4d6d" opacity="0.14" />
+  <text x="90" y="235" fill="#f5f3ef" font-size="72" font-family="Arial, sans-serif" font-weight="700">Amargómetro</text>
+  <text x="90" y="315" fill="#f5f3ef" font-size="72" font-family="Arial, sans-serif" font-weight="700">Supremo</text>
+  <rect x="90" y="370" width="780" height="28" rx="14" fill="#2a2a3a" />
+  <rect x="90" y="370" width="610" height="28" rx="14" fill="url(#accent)" />
+  <text x="90" y="470" fill="#c5bfbb" font-size="36" font-family="Arial, sans-serif">Test online de amargura con resultado compartible</text>
+</svg>
