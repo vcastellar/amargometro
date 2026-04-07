@@ -107,6 +107,13 @@ const resultBands = [
       'Absorbes cualquier rastro de luz o alegría en varios metros a la redonda. El mundo te parece un error de diseño que tú habrías gestionado mejor.',
   },
   {
+    maxRatio: 0.99,
+    title: 'Heraldo del Vinagre',
+    category: 'Prejefe de la amargura',
+    description:
+      'Eres una tormenta de bilis con piernas: donde pasas, se marchitan las risas. Escupes sentencias, fulminas ilusiones y conviertes cualquier plan inocente en una carnicería emocional.',
+  },
+  {
     maxRatio: 1,
     title: 'General del Mal Fario',
     category: 'Jefe final de la amargura',
