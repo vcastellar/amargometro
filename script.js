@@ -1,6 +1,6 @@
 const questions = [
   {
-    text: 'Posas encantado cuando alguien propone una foto de grupo consigues evitar huir como si cada flash te quitara un año de vida?',
+    text: '¿Posas encantado cuando alguien propone una foto de grupo sin huir como si cada flash te fuera a quitar un año de vida?',
     weight: 5,
   },
   {
