@@ -682,4 +682,14 @@ h2 {
   .option-pill {
     width: 100%;
   }
+
+  .affiliate-product-link--book {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .affiliate-product-cover {
+    width: 120px;
+    height: 180px;
+  }
 }
