@@ -130,13 +130,11 @@ const resetButton = document.getElementById('reset-test');
 const meterBar = document.getElementById('meter-bar');
 const meterMax = document.getElementById('meter-max');
 const scoreValue = document.getElementById('score-value');
-const scoreline = document.querySelector('.scoreline');
 const resultSection = document.querySelector('.result');
 const resultTitle = document.getElementById('result-title');
 const resultDescription = document.getElementById('result-description');
 const resultCategoryName = document.getElementById('result-category-name');
 const resultAffiliate = document.getElementById('result-affiliate');
-const resultAffiliateLink = document.querySelector('#result-affiliate .affiliate-product-link');
 const shareStatus = document.getElementById('share-status');
 const quizStatus = document.getElementById('quiz-status');
 const deviceHint = document.getElementById('device-hint');
@@ -347,22 +345,14 @@ function scrollToQuestion(index) {
 }
 
 function focusResultArea() {
-  const target = scoreline || resultSection;
-
-  if (target) {
-    target.scrollIntoView({
-      behavior: smoothBehavior[currentDeviceProfile],
-      block: 'start',
-    });
+  if (!resultSection) {
+    return;
   }
 
-  if (resultAffiliateLink) {
-    const focusDelay = currentDeviceProfile === 'mobile' ? 500 : 320;
-
-    window.setTimeout(() => {
-      resultAffiliateLink.focus({ preventScroll: true });
-    }, focusDelay);
-  }
+  resultSection.scrollIntoView({
+    behavior: smoothBehavior[currentDeviceProfile],
+    block: 'start',
+  });
 }
 
 function calculateResult() {
