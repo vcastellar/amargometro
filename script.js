@@ -134,6 +134,7 @@ const resultSection = document.querySelector('.result');
 const resultTitle = document.getElementById('result-title');
 const resultDescription = document.getElementById('result-description');
 const resultCategoryName = document.getElementById('result-category-name');
+const resultBook = document.getElementById('result-book');
 const shareStatus = document.getElementById('share-status');
 const quizStatus = document.getElementById('quiz-status');
 const deviceHint = document.getElementById('device-hint');
@@ -180,12 +181,19 @@ function updateShareStatus(message) {
   }
 }
 
+function setElementHidden(element, hidden) {
+  if (element) {
+    element.hidden = hidden;
+  }
+}
+
 function resetResultView() {
   meterBar.style.width = '0%';
   scoreValue.textContent = '0';
   resultCategoryName.textContent = defaultResultState.category;
   resultTitle.textContent = defaultResultState.title;
   resultDescription.textContent = defaultResultState.description;
+  setElementHidden(resultBook, true);
 }
 
 async function shareResult(platform) {
@@ -355,6 +363,7 @@ function calculateResult() {
     resultCategoryName.textContent = 'Diagnóstico bloqueado';
     resultTitle.textContent = 'Te has dejado preguntas sin responder, alma de cántaro.';
     resultDescription.textContent = `Completa la pregunta ${unanswered + 1} para que podamos juzgarte con datos y no solo por intuición.`;
+    setElementHidden(resultBook, true);
     scrollToQuestion(unanswered);
     return;
   }
@@ -380,6 +389,7 @@ function calculateResult() {
   resultCategoryName.textContent = band.category;
   resultTitle.textContent = band.title;
   resultDescription.textContent = band.description;
+  setElementHidden(resultBook, false);
   updateShareStatus('');
   focusResultArea();
 }
